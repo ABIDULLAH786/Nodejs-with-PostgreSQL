@@ -5,7 +5,13 @@ const env = require('dotenv');
 
 env.config({path:"./config/config.env"})
 app.use(express.json())
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+// connection
+const sequelize = require("./config/connection");
+
 
 app.use("/users",require("./routes/userRoutes"))
 

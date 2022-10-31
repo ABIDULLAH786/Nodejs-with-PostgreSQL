@@ -1,4 +1,4 @@
-
+const UserModel = require("../models/userModel")
 
 module.exports.addNewUser = async (req, res) => {
     if (!req.body) {
@@ -7,23 +7,9 @@ module.exports.addNewUser = async (req, res) => {
         });
     }
 
-    // create driver 
+    console.log(req.body)
     try {
-        const userDate = {
-            id: req.body.id,
-            username: req.body.username,
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            phone_no: req.body.phone_no,
-            lateast_verification_code: req.body.lateast_verification_code,
-            bio: req.body.bio,
-            image: req.body.image,
-            online_status: req.body.drionline_statusver_img,
-            admin_block_status: req.body.admin_block_status,
-            created_at: req.body.created_at,
-            updated_at: req.body.updated_at,
-            privacy: req.body.privacy,
-        };
+        console.log(req.file)
         req.body.image = `assets/users-images/${req.file.filename}`;
 
         const createUser = await UserModel.create(req.body);
@@ -42,26 +28,32 @@ module.exports.addNewUser = async (req, res) => {
 }
 module.exports.updateUserById = async (req, res) => {
     try {
-        const result = await UserModel.update({
+        req.body.image = `assets/users-images/${req.file.filename}`;
+        const result = await UserModel.update(req.body,{
             where: {
-                id: req.params.id
+                id: req.params.uId
             }
         })
         if (result) {
+            const find = await UserModel.findOne({
+                where: {
+                    id: req.params.uId
+                }
+            })
             res.status(200).send({
                 message: "user updated successfully",
-                user: result,
+                user: find,
             });
         } else {
             res.status(400).send({
                 message: "user not found",
-                user: result,
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(400).send({
             message: "error occured while updating user",
-            user: result,
+            error: error,
         });
     }
 }
@@ -91,15 +83,17 @@ module.exports.getUserById = async (req, res) => {
 
 module.exports.removeUserById = async (req, res) => {
     try {
+        const find = await UserModel.findByPk(req.params.id);
+
         const result = await UserModel.destroy({
             where: {
-                id: req.params.id
+                id: req.params.uId
             }
         })
         if (result) {
             res.status(200).send({
-                message: "search result",
-                user: result,
+                message: "user removed successfully",
+                user: find,
             });
         } else {
             res.status(400).send({

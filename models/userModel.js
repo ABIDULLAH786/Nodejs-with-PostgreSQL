@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
 
+const StatusModel = require("./statusModel")
 
 const UserModel = sequelize.define('users', {
     id: {
@@ -9,7 +10,7 @@ const UserModel = sequelize.define('users', {
         primaryKey: true
     },
     activity_status_id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     username: {
@@ -25,11 +26,11 @@ const UserModel = sequelize.define('users', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    phonee_no: {
+    phone_no: {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    lateest_varification_code: {
+    latest_verification_code: {
         type: DataTypes.TEXT,
         allowNull: false
     },
@@ -50,11 +51,11 @@ const UserModel = sequelize.define('users', {
         allowNull: false
     },
     created_at: {
-        type: DataTypes.TIMESTAMP,
+        type: DataTypes.DATE,
         allowNull: false
     },
     updated_at: {
-        type: DataTypes.TIMESTAMP,
+        type: DataTypes.DATE,
         allowNull: false
     },
     privacy: {
