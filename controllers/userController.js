@@ -1,5 +1,5 @@
 const UserModel = require("../models/userModel")
-
+const fs = require("fs")
 module.exports.addNewUser = async (req, res) => {
     if (!req.body) {
         res.status(400).send({
@@ -28,8 +28,15 @@ module.exports.addNewUser = async (req, res) => {
 }
 module.exports.updateUserById = async (req, res) => {
     try {
+        // first check and remove the previous image
+        const find = await UserModel.findByPk(req.params.uId);
+        if (find.image != null) {
+            fs.unlinkSync(find.image);
+        }
+
+        
         req.body.image = `assets/users-images/${req.file.filename}`;
-        const result = await UserModel.update(req.body,{
+        const result = await UserModel.update(req.body, {
             where: {
                 id: req.params.uId
             }
@@ -61,6 +68,7 @@ module.exports.getUserById = async (req, res) => {
     try {
         const result = await UserModel.findByPk(req.params.id);
         if (result) {
+            
             res.status(200).send({
                 message: "user",
                 user: result,
@@ -83,8 +91,12 @@ module.exports.getUserById = async (req, res) => {
 
 module.exports.removeUserById = async (req, res) => {
     try {
-        const find = await UserModel.findByPk(req.params.id);
-
+        
+        const find = await UserModel.findByPk(req.params.uId);
+        console.log(find)
+        if (find.image != null) {
+            fs.unlinkSync(find.image);
+        }
         const result = await UserModel.destroy({
             where: {
                 id: req.params.uId
@@ -102,6 +114,7 @@ module.exports.removeUserById = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(400).send({
             message: "error occured while deleting user",
             error: error,
