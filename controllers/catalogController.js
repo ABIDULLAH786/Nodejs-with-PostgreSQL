@@ -1,5 +1,6 @@
 const CatalogModel = require("../models/catalog_Model");
 const CatalogTypeModel = require("../models/catalog_type_Model");
+const ProductModel = require("../models/product_Model")
 
 
 module.exports.createCatalog = async (req, res) => {
@@ -62,10 +63,18 @@ module.exports.getAllCatalogs = async (req, res) => {
 module.exports.getSingleCatalog = async (req, res) => {
 
     try {
+        const checkCatalogType = await ProductModel.findAll();
+        if (checkCatalogType) {
+            console.log("Product is not empty")
+        }
+        console.log("Product is empty")
         console.log(req.params.cId)
-        const result = await CatalogModel.findByPk(req.params.cId, {
+        const result = await CatalogModel.findByPk(req.params.cId, checkCatalogType && {
             include: [{
                 model: CatalogTypeModel,
+                
+            },{
+                model: ProductModel,
             }]
         })
         if (result) {
@@ -111,6 +120,9 @@ module.exports.updateCatalog = async (req, res) => {
             const find = await CatalogModel.findByPk(req.params.cId, {
                 include: [{
                     model: CatalogTypeModel,
+
+                }, {
+                    model: ProductModel,
                 }]
             });
             res.status(200).send({
@@ -137,16 +149,22 @@ module.exports.removeCatalog = async (req, res) => {
         const deletedData = await CatalogModel.findByPk(req.params.cId, {
             include: [{
                 model: CatalogTypeModel,
+
+            }, {
+                model: ProductModel,
             }]
         });
-        console.log(deletedData)
+        
         if (!deletedData) {
             return res.status(200).send({
-                message: "The catalog which you are tryong to removed i not found in system",
+                Error: "The catalog which you are tryong to removed i not found in system",
                 Hint: "Either you enter the wrong catalog id or it does not exist in database"
             });
         }
         const result = await CatalogModel.destroy({
+            // truncate: true, //this will empty all table
+            // cascade: true, // this will help above command to deleted that data also which i reffering to its id primary key
+            // restartIdentity: true, // this will help above truncate command to reset the promary key
             where: {
                 catalog_id: req.params.cId
             }

@@ -1,7 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
 const ProductTypeModel = require("./product_type_Model")
-const CatalogTypeModel = require("./catalog_type_Model")
+const CatalogTypeModel = require("./catalog_type_Model");
+const CatalogModel = require("./catalog_Model");
 
 const ProductModel = sequelize.define('product', {
     id: {
@@ -36,12 +37,12 @@ const ProductModel = sequelize.define('product', {
         allowNull: false
     },
     product_type_id: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    },
-    catalog_type_id: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
+    },
+    catalog_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     },
 }, {
     timestamps: false
@@ -58,11 +59,11 @@ ProductModel.belongsTo(ProductTypeModel, {
 })
 
 
-// realtion with CatalogTypeModel
-CatalogTypeModel.hasMany(ProductModel, {
-    foreignKey: "catalog_type_id",
+// realtion with CatalogModel
+CatalogModel.hasMany(ProductModel, {
+    foreignKey: "catalog_id",
 })
-ProductModel.belongsTo(CatalogTypeModel, {
-    foreignKey: "catalog_type_id",
+ProductModel.belongsTo(CatalogModel, {
+    foreignKey: "catalog_id",
 })
 module.exports = ProductModel

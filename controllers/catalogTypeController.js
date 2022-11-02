@@ -1,6 +1,8 @@
 const CatalogModel = require("../models/catalog_Model");
 const CatalogTypeModel = require("../models/catalog_type_Model");
+const ProductModel = require("../models/product_Model");
 
+// ---------------------(Create new Product_type Work)---------------------
 module.exports.createCatalogType = async (req, res) => {
     if (req.body.length == 0) {
         return res.status(400).send({
@@ -35,12 +37,16 @@ module.exports.createCatalogType = async (req, res) => {
     }
 } 
 
+// ---------------------(Get All Product_types Work)---------------------
 module.exports.getAllCatalogTypes = async (req, res) => {
 
     try {
         const result = await CatalogTypeModel.findAll({
             include: [{
                 model: CatalogModel,
+                include: [{
+                    model: ProductModel,
+                }],
             }]
         })
         if (result) {
@@ -63,11 +69,15 @@ module.exports.getAllCatalogTypes = async (req, res) => {
     }
 } 
 
+// ---------------------(Get Single Product_type Work)---------------------
 module.exports.getSingleCatalogType = async (req, res) => {
     try {
         const result = await CatalogTypeModel.findByPk(req.params.cId,{
             include: [{
                 model: CatalogModel,
+                include: [{
+                    model: ProductModel,
+                }],
             }]
         })
         if (result) {
@@ -90,6 +100,7 @@ module.exports.getSingleCatalogType = async (req, res) => {
     }
 } 
 
+// ---------------------(Update Single Product_type Work)---------------------
 module.exports.updateCatalogType = async (req, res) => {
     try {
         const result = await CatalogTypeModel.update(req.body, {
@@ -118,6 +129,7 @@ module.exports.updateCatalogType = async (req, res) => {
     }
 } 
 
+// ---------------------(Remove Single Product_type Work)---------------------
 module.exports.removeCatalogType = async (req, res) => {
     try {
         const result = await CatalogTypeModel.destroy({
