@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
 
 const StatusModel = require("./statusModel")
+const ChatListModel = require("./chat_list_Model")
 
 const UserModel = sequelize.define('users', {
     id: {
@@ -31,7 +32,7 @@ const UserModel = sequelize.define('users', {
         allowNull: false
     },
     latest_verification_code: {
-        type: DataTypes.TEXT,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     bio: {
@@ -67,10 +68,22 @@ const UserModel = sequelize.define('users', {
     timestamps: false
 });
 
+// relation with StatusModel
 StatusModel.hasOne(UserModel, {
     foreignKey: "id",
 })
 UserModel.belongsTo(StatusModel, {
     foreignKey: "id",
 })
+
+
+// realtion with chatListModel
+ChatListModel.hasOne(UserModel, {
+    foreignKey: "id",
+})
+UserModel.belongsTo(ChatListModel, {
+    foreignKey: "id",
+})
+
+
 module.exports = UserModel

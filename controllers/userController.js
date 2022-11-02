@@ -1,18 +1,31 @@
 const UserModel = require("../models/userModel")
 const fs = require("fs")
 module.exports.addNewUser = async (req, res) => {
-    if (!req.body) {
-        res.status(400).send({
+    if (req.body.length==0) {
+        return res.status(400).send({
             message: "Content can not be empty!"
         });
     }
+    const userData = {
+        activity_status_id: req.body.activity_status_id,
+        username:req.body.username,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        phone_no: req.body.phone_no,
+        latest_verification_code: req.body.latest_verification_code ,
+        bio: req.body.bio,
+        online_status: req.body.online_status,
+        admin_block_status: req.body.admin_block_status,
+        created_at: req.body.created_at,
+        updated_at: req.body.updated_at,
+        privacy: req.body.privacy
+    }
 
-    console.log(req.body)
     try {
         console.log(req.file)
-        req.body.image = `assets/users-images/${req.file.filename}`;
+        userData.image = `assets/users-images/${req.file.filename}`;
 
-        const createUser = await UserModel.create(req.body);
+        const createUser = await UserModel.create(userData);
         res.status(200).send({
             message: "New User Data saved successfully",
             driver: createUser,
@@ -33,10 +46,23 @@ module.exports.updateUserById = async (req, res) => {
         if (find.image != null) {
             fs.unlinkSync(find.image);
         }
-
+        const userData = {
+            activity_status_id: req.body.activity_status_id,
+            username: req.body.username,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            phone_no: req.body.phone_no,
+            latest_verification_code: req.body.latest_verification_code,
+            bio: req.body.bio,
+            online_status: req.body.online_status,
+            admin_block_status: req.body.admin_block_status,
+            created_at: req.body.created_at,
+            updated_at: req.body.updated_at,
+            privacy: req.body.privacy
+        }
         
-        req.body.image = `assets/users-images/${req.file.filename}`;
-        const result = await UserModel.update(req.body, {
+        userData.image = `assets/users-images/${req.file.filename}`;
+        const result = await UserModel.update(userData, {
             where: {
                 id: req.params.uId
             }
@@ -66,9 +92,8 @@ module.exports.updateUserById = async (req, res) => {
 }
 module.exports.getUserById = async (req, res) => {
     try {
-        const result = await UserModel.findByPk(req.params.id);
+        const result = await UserModel.findByPk(req.params.uId);
         if (result) {
-            
             res.status(200).send({
                 message: "user",
                 user: result,
@@ -121,7 +146,6 @@ module.exports.removeUserById = async (req, res) => {
         });
     }
 }
-
 
 module.exports.findAllUsersById = async (req, res) => {
     try {

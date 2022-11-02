@@ -2,20 +2,18 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
 
 
-const StatusModel = sequelize.define('status', {
-    id: {
+const CatalogModel = sequelize.define('catalogs', {
+    catalog_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    active_status: {
+    name: {
         type: DataTypes.TEXT,
         allowNull: false
     },
-   
-
 }, {
     timestamps: false
 });
 
-module.exports = StatusModel
+module.exports = CatalogModel
